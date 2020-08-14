@@ -1,20 +1,40 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# health-buddy-webapp
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+Re-design of existing site "HealthBuddy"
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+## Project setup
+```
+yarn install
+```
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+### Compiles and minifies for production
+```
+yarn build
+```
+
+### Lints and fixes files
+```
+yarn lint
+```
+
+### Environment variables
+There are several constants, which are used in project code, but set up via CI pipeline, such as:
+```
+VUE_APP_BASE_URL - base URL for connection to Drupal part
+VUE_APP_USERNAME - username for connection to Drupal part
+VUE_APP_PASSWORD - password for connection to Drupal part
+``` 
+These variables can be accessible in any place in the following way:
+```
+process.env.VUE_APP_*,
+```
+**Important note:** All environment variables should start with `'VUE_APP_'`
+
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

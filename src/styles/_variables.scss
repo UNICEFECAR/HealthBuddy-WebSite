@@ -1,0 +1,43 @@
+$textColor: #152FBF;
+$backgroundColor: #E4F5FF;
+$secondaryColor: #8DD3FF;
+$whiteColor: #fff;
+$grayDarkColor: #F8F8F8;
+$grayLightColor: #FAFAFA;
+$blackTextColor: #03092C;
+$blueTextColor: #1CABE2;
+$hoverLinkColor: #182A8E;
+$lightBlueColor: rgba(28, 171, 226, 0.1);
+$borderColorLighter: rgba(21, 47, 191, 0.1);
+$borderColorDarker: rgba(21, 47, 191, 0.2);
+$navbarButtonsColor: rgba(141, 211, 255, 0.4);
+
+$mobileResolution: 800px;
+$baseZIndex: 0;
+
+
+@mixin square($size, $backgroundColor, $zIndex) {
+  content: '';
+  position: absolute;
+  width: $size;
+  height: $size;
+  z-index: $zIndex;
+  background-color: $backgroundColor;
+  transform: rotate(130deg);
+  border-radius: 140px;
+}
+
+@mixin wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+@mixin font($fontSize, $fontWeight: normal, $lineHeight: 20px) {
+  font-size: $fontSize;
+  font-weight: $fontWeight;
+  line-height: $lineHeight;
+}
+
+@mixin fontFamily {
+  font-family: "Open Sans", sans-serif;
+}
