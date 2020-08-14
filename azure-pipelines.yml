@@ -102,5 +102,5 @@ steps:
     inlineScript: |
       az storage account show-connection-string --name $(storageAccount) --resource-group $(resourceGroup) `
         --query "connectionString"
-      az storage account keys list --name $(storageAccount) --resource-group $(resourceGroup)
+      az storage account keys list --account-name $(storageAccount) --resource-group $(resourceGroup)
   condition: and(succeeded(), ${{ parameters.ShowKeys }}, true)
