@@ -1,0 +1,88 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+variables:
+  azSubscription: 'UNI_WEBS - RS-UNI-CHE-HEALTH-BUDDY'
+  resourceGroup: 'RS-UNI-CHE-HEALTH-BUDDY'
+  storageAccount: saeuwprd1hbcovid01web
+
+parameters:
+  - name: CreateSA
+    displayName:  Create SA for HealthBuddy website
+    type: boolean
+    default: false
+
+  - name: DisableWebSite
+    displayName:  Disable Web Site
+    type: boolean
+    default: false
+
+  - name: EnableWebSite
+    displayName:  Enable Web Site
+    type: boolean
+    default: false
+
+
+steps:
+
+- task: AzureCLI@2
+  name: CreateSA
+  displayName: Create SA for HealthBuddy website
+  inputs:
+    azureSubscription: $(azSubscription)
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az storage account create --name $(storageAccount) --resource-group $(resourceGroup) `
+        --https-only false `
+        --access-tier Cool `
+        --sku Standard_LRS `
+        --kind StorageV2
+
+      $sacs = $(az storage account show-connection-string --name $(storageAccount) --resource-group $(resourceGroup) `
+        --query "connectionString")
+
+      az storage blob service-properties update --account-name $(storageAccount) `
+        --connection-string $sacs `
+        --static-website --404-document index.html `
+        --index-document index.html
+  condition: and(succeeded(), ${{ parameters.CreateSA }}, true)
+  
+- task: AzureCLI@2
+  name: DisableWebSite
+  displayName: Disable Web Site
+  inputs:
+    azureSubscription: $(azSubscription)
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $sacs = $(az storage account show-connection-string --name $(storageAccount) --resource-group $(resourceGroup) `
+        --query "connectionString")
+      az storage blob service-properties update --account-name $(storageAccount) `
+        --connection-string $sacs `
+        --static-website false
+  condition: and(succeeded(), ${{ parameters.DisableWebSite }}, true)
+  
+- task: AzureCLI@2
+  name: EnableWebSite
+  displayName: Enable Web Site
+  inputs:
+    azureSubscription: $(azSubscription)
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $sacs = $(az storage account show-connection-string --name $(storageAccount) --resource-group $(resourceGroup) `
+        --query "connectionString")
+      az storage blob service-properties update --account-name $(storageAccount) `
+        --connection-string $sacs `
+        --static-website --404-document index.html `
+        --index-document index.html `
+        --static-website true
+  condition: and(succeeded(), ${{ parameters.EnableWebSite }}, true)
