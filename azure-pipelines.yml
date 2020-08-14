@@ -29,6 +29,11 @@ parameters:
     type: boolean
     default: false
 
+  - name: ShowKeys
+    displayName:  Show Keys
+    type: boolean
+    default: false
+
 
 steps:
 
@@ -86,3 +91,16 @@ steps:
         --index-document index.html `
         --static-website true
   condition: and(succeeded(), ${{ parameters.EnableWebSite }}, true)
+
+- task: AzureCLI@2
+  name: ShowKeys
+  displayName: Show Keys
+  inputs:
+    azureSubscription: $(azSubscription)
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az storage account show-connection-string --name $(storageAccount) --resource-group $(resourceGroup) `
+        --query "connectionString"
+      az storage account keys list --name $(storageAccount) --resource-group $(resourceGroup)
+  condition: and(succeeded(), ${{ parameters.ShowKeys }}, true)
