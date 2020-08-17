@@ -3,7 +3,7 @@
     <div class="Cookie__wrapper">
       <cookie-law position="top" transitionName="fade" v-on:accept="acceptPolicy">
         <div slot="message">
-          <p>{{ policyText }}</p>
+          <p v-html="policyText"/>
         </div>
       </cookie-law>
     </div>
@@ -35,12 +35,12 @@ export default {
 </script>
 
 <style lang="scss">
-$backgroundColor: $whiteColor;
+$blockBackgroundColor: $whiteColor;
 
 .policy-block {
   .Cookie__wrapper {
     width: 100%;
-    background: $backgroundColor;
+    background: $blockBackgroundColor;
 
     p {
       margin: 0;
@@ -48,7 +48,8 @@ $backgroundColor: $whiteColor;
 
     a {
       color: $textColor;
-      text-decoration: underline;
+      font-weight: 600;
+      border-bottom: 1px solid $textColor;
     }
   }
 
@@ -79,6 +80,12 @@ $backgroundColor: $whiteColor;
 
     &:last-child {
       margin-right: 0;
+    }
+  }
+  @media (max-width: $mobileResolution) {
+    .Cookie {
+      padding: 25px;
+      flex-direction: row;
     }
   }
 }

@@ -10,6 +10,7 @@
 <script>
   import {mapGetters} from 'vuex';
   import {isMobile} from '@/util/browser';
+  import {HTTP} from "@/util/http";
 
   const WebChat = require('@/assets/js/bot.js');
 
@@ -27,29 +28,28 @@
       initialPayload() {
         return `chat ${this.getLanguage || 'en'}`;
       },
+      currentLanguage() {
+        return this.getLanguage ? this.getLanguage : 'en'
+      }
     },
     data() {
       return {
-        initalized: false
+        initalized: false,
+        buttonText: '',
+        inputPlaceholder: ''
       };
     },
     watch: {
       getLanguage() {
+        this.fetchData();
         if (!this.initalized) {
           this.initalized = true;
           this.setupChat();
           this.updateOpenStatus();
         } else {
-          //WebChat.dropMessages();
-          //WebChat.clear();
           this.sendInitial()
         }
       },
-/*      $route(to) {
-        if (to.hash.indexOf('webchat') !== -1 && !WebChat.isOpen()) {
-          WebChat.open()
-        }
-      },*/
     },
     methods: {
       sendInitial() {
@@ -59,6 +59,7 @@
         if (!isMobile() || this.$router.currentRoute.hash.indexOf('webchat') !== -1) {
           setTimeout(() => WebChat.open(), 150);
         }
+
       },
       updateOpenStatus() {
         if (!WebChat.isOpen() && isMobile()) {
@@ -70,21 +71,21 @@
         setTimeout(() => {
           if (WebChat.isOpen() === this.isOpen) return;
           this.$emit('update:isOpen', WebChat.isOpen());
+          this.$el.getElementsByClassName("push-new-message")[0].setAttribute("placeholder", this.inputPlaceholder);
         }, 100);
       },
       setupChat() {
         WebChat.default.init({
           selector: '#webchat',
           initPayload: this.initialPayload,
-          channelUuid: 'b46efd0e-849d-45c9-b056-370a71be6d60',
-          host: 'https://rapidpro.ilhasoft.mobi',
+          channelUuid: process.env.VUE_APP_CHANNEL_UUID,
+          host: process.env.VUE_APP_HOST,
           title: 'HealthBuddy',
-          inputTextFieldHint: "Type your question here",
+          inputTextFieldHint: this.inputPlaceholder,
           profileAvatar: require('@/assets/img/svg/chat-avatar.svg'),
           disableTooltips: true,
           docViewer: true,
           showFullScreenButton: true,
-          //autoOpen: true,
           hideWhenNotConnected: false,
           params: {
             images: {
@@ -97,6 +98,26 @@
           },
         });
         this.sendInitial();
+      },
+      fetchData() {
+        const url = `/jsonapi/node/landing_page?filter[Langcode][condition][path]=langcode&filter[Langcode][condition][value]=`
+        const lang = this.currentLanguage === 'en' ? '' : '/' + this.currentLanguage;
+        HTTP
+          .get(lang + url + this.currentLanguage)
+          .then(response => {
+            const attrs = response.data.data[0].attributes;
+            this.buttonText = attrs.field_chat_button_text;
+            this.inputPlaceholder = attrs.field_chat_input_placeholder;
+          })
+          .then(() => {
+            const paragraph = document.createElement("p");
+
+            this.$el.getElementsByClassName("push-launcher")[0].appendChild(paragraph);
+            this.$el.getElementsByClassName("push-launcher")[0].getElementsByTagName("p")[0].innerText = this.buttonText;
+          })
+          .catch(error => {
+            console.log(error)
+          })
       }
     }
   }
@@ -131,16 +152,12 @@
       z-index: $baseZIndex + 4;
       border: none;
 
-      .push-open-launcher__container {
-        display: none;
-      }
       .push-close-launcher.push-default {
         display: none;
       }
 
-      &:before {
-        content: 'Ask your Covid-19 question';
-        padding-right: 17px;
+      img {
+        display: none;
       }
 
       &:after {
@@ -155,7 +172,7 @@
       }
     }
     .push-widget-container {
-      bottom: 100px;
+      bottom: 110px;
       right: 20px;
       &.push-chat-open {
         height: 98vh;
@@ -370,7 +387,7 @@
       background-color: inherit;
       color: $theme-color2;
       font-weight: normal;
-      font-size: 18px;
+      font-size: 16px;
       line-height: 160%;
       padding: 0 28px;
     }
@@ -378,20 +395,20 @@
     ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
       color: $theme-color2;
       font-family: "Open Sans", sans-serif;
-      font-size: 18px;
+      font-size: 16px;
       opacity: 1; /* Firefox */
     }
 
     :-ms-input-placeholder { /* Internet Explorer 10-11 */
       color: $theme-color2;
       font-family: "Open Sans", sans-serif;
-      font-size: 18px;
+      font-size: 16px;
     }
 
     ::-ms-input-placeholder { /* Microsoft Edge */
       color: $theme-color2;
       font-family: "Open Sans", sans-serif;
-      font-size: 18px;
+      font-size: 16px;
     }
 
     .push-send {

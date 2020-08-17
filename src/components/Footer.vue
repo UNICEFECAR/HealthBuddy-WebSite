@@ -2,12 +2,7 @@
   <div class="footer">
     <div class="footer__wrapper">
       <div class="footer__info">
-        <Social
-          :twitter="this.social.twitter"
-          :instagram="this.social.instagram"
-          :facebook="this.social.facebook"
-          :youtube="this.social.youtube"
-        />
+        <Download />
       </div>
       <div class="footer__links">
         <div class="footer__item footer__item_copyright">
@@ -31,7 +26,7 @@
 
 <script>
 import Copyright from "@/components/Copyright";
-import Social from "@/components/Social";
+import Download from "@/components/Download";
 import {HTTP} from "@/util/http";
 import {mapGetters} from "vuex";
 
@@ -39,13 +34,12 @@ export default {
   name: 'Footer',
   components: {
     Copyright,
-    Social
+    Download
   },
   data() {
     return {
       attrs: [],
-      copyright: '',
-      social: {}
+      copyright: ''
     }
   },
   computed: {
@@ -65,12 +59,6 @@ export default {
         .then(response => {
           this.attrs = response.data.data[0].attributes;
           this.copyright = this.attrs.field_footer_support;
-          this.social = {
-            twitter: this.attrs.field_social_network_twitter.uri,
-            instagram: this.attrs.field_social_network_instagram.uri,
-            facebook: this.attrs.field_social_network_facebook.uri,
-            youtube: this.attrs.field_social_network_youtube.uri
-          }
         })
         .catch(error => {
           console.log(error)

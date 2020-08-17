@@ -43,6 +43,7 @@
       </text-section>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -65,7 +66,6 @@
     data() {
       return {
         isOpenCarousel: true,
-        //isOpen: false,
         heroAttrs: {},
         commonAttrs: {},
         videos: [],
@@ -157,8 +157,6 @@
               },
             ];
           })
-          //.then(() => this.initVideos())
-          //.then(() => this.resetCarousel())
           .catch(error => {
             console.log(error)
           })
@@ -173,8 +171,6 @@
     },
     mounted() {
       this.fetchData();
-      //this.resetCarousel();
-      //this.initVideos();
     },
     watch: {
       getLanguage() {
@@ -182,13 +178,6 @@
         this.resetCarousel();
         this.initVideos();
       }
-      /*      '$i18n.locale'() {
-              this.resetCarousel();
-              this.initVideos();
-            },*/
-      /*      isOpen() {
-              this.resetCarousel();
-            },*/
     }
   }
 </script>
@@ -282,23 +271,6 @@
       text-align: center;
       position: relative;
       z-index: $baseZIndex + 2;
-    }
-  }
-
-  .button_primary {
-    @include font(16px, 600, 140%);
-    @include fontFamily();
-    background: $textColor;
-    border-radius: 70px;
-    color: $whiteColor;
-    border: none;
-    margin-top: 30px;
-    display: inline-block;
-
-    a {
-      color: $whiteColor;
-      display: block;
-      padding: 18px 40px;
     }
   }
 

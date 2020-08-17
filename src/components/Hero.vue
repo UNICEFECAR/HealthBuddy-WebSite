@@ -10,7 +10,7 @@
         </p>
       </div>
       <div class="banner__image">
-        <img class="banner__image-img" src="../assets/img/svg/hero2.svg"/>
+        <img class="banner__image-img" src="../assets/img/svg/hero.svg"/>
         <div class="banner__image-bubble">
           {{ bubble }}
         </div>
@@ -63,6 +63,7 @@ $squareColor: $whiteColor;
     height: inherit;
     display: flex;
     padding: 0 30px 0 88px;
+    width: 100%;
     @include wrapper();
   }
 

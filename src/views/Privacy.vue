@@ -80,7 +80,6 @@
       position: absolute;
       display: block;
       bottom: 16px;
-      //left: -9%;
       left: 0;
       background: url("../assets/img/svg/plants_group.svg") no-repeat;
       width: 279px;
@@ -92,7 +91,6 @@
       position: absolute;
       display: block;
       bottom: 30px;
-      //right: -8%;
       right: 0;
       background: url("../assets/img/svg/table.svg") no-repeat;
       width: 277px;

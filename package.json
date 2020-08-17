@@ -21,11 +21,11 @@
     "@vue/cli-plugin-eslint": "~4.2.0",
     "@vue/cli-service": "~4.2.0",
     "babel-eslint": "^10.0.3",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^7.0.0-alpha.0",
     "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",
-    "typeface-open-sans": "0.0.75",
     "vue-cookie-law": "^1.13.3",
     "vue-template-compiler": "^2.6.11",
     "webpack": "^4.36.0"

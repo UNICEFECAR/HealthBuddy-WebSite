@@ -42,7 +42,6 @@
                            class="navbar-modal-item">
                 {{ item.title }}
               </router-link>
-              <Social/>
             </div>
           </a>
         </div>
@@ -54,14 +53,12 @@
 <script>
 import LanguageDropdown from '@/components/LanguageDropdown';
 import PolicyBlock from "@/components/PolicyBlock";
-import Social from '@/components/Social';
 import {mapGetters} from "vuex";
 import {HTTP} from "@/util/http";
 
 export default {
   name: 'Navbar',
   components: {
-    Social,
     PolicyBlock,
     LanguageDropdown,
   },
@@ -294,11 +291,6 @@ export default {
           }
         }
       }
-    }
-
-    .social {
-      position: absolute;
-      bottom: 37px;
     }
 
     &__brand {

@@ -10,6 +10,6 @@ export function isMobile() {
 }
 
 export function getValidBrowserLanguage() {
-  const language = validLanguages.find(l => l.browserCode === navigator.language);
+  const language = validLanguages.find(l => l.languageBrowserCode === navigator.language);
   return language ? language.id : undefined;
 }

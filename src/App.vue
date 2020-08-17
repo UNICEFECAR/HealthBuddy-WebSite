@@ -23,7 +23,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "~typeface-open-sans/index.css";
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
 
 * {
   outline: none;
@@ -53,6 +53,23 @@ a {
 
 #app {
   overflow: hidden;
+}
+
+.button_primary {
+  @include font(16px, 600, 140%);
+  @include fontFamily();
+  background: $textColor;
+  border-radius: 70px;
+  color: $whiteColor;
+  border: none;
+  margin-top: 30px;
+  display: inline-block;
+
+  a {
+    color: $whiteColor;
+    display: block;
+    padding: 18px 40px;
+  }
 }
 
 </style>

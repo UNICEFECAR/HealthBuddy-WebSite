@@ -16,10 +16,12 @@
         <a v-for="(language, index) in filteredList"
            :key="index"
            :class="{ selected: getLanguage === language.languageBrowserCode }"
-           :title="language.languageNameOriginal"
+           :title="language.languageNameOriginal ? language.languageNameOriginal : language.languageNameLocalized"
            @click="setLanguage(language.languageBrowserCode)"
            class="dropdown__item">
-          <span class="dropdown__language">{{ language.languageNameOriginal }}</span>
+          <span class="dropdown__language">
+            {{ language.languageNameOriginal ? language.languageNameOriginal : language.languageNameLocalized }}
+          </span>
         </a>
       </div>
     </div>
@@ -59,7 +61,8 @@
       },
       filteredList() {
         return this.languages.filter(language => {
-          return language.languageNameOriginal.toLowerCase().includes(this.search.toLowerCase())
+          const languageName = language.languageNameOriginal ? language.languageNameOriginal : language.languageNameLocalized;
+          return languageName.toLowerCase().includes(this.search.toLowerCase())
         })
       }
     },
@@ -70,11 +73,6 @@
         }
       });
     },
-/*    watch: {
-      getLanguage() {
-        this.$i18n.locale = this.getLanguage;
-      },
-    },*/
     methods: {
       ...mapActions([
         'setLanguage',
