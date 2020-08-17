@@ -7,8 +7,7 @@ variables:
 
 stages:
 
-- stage: build
-  displayName: build
+- stage: build-web-site
 
   jobs:
   - job: build
@@ -43,10 +42,10 @@ stages:
         inputs:
             targetPath: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
 
-- stage: dev1
+- stage: deploy-web-site
   dependsOn:
-  - build  
-  condition: succeeded('build')
+  - build-web-site  
+  condition: succeeded('build-web-site')
 
   jobs:
   - deployment: deploy
