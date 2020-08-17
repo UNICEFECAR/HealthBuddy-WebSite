@@ -1,0 +1,90 @@
+trigger: none
+
+variables:
+  azSubscription: 'UNI_WEBS - RS-UNI-CHE-HEALTH-BUDDY'
+  resourceGroup: 'RS-UNI-CHE-HEALTH-BUDDY'
+  storageAccount: saeuwprd1hbcovid01web
+
+stages:
+
+- stage: build
+  displayName: build
+
+  jobs:
+  - job: build
+    pool:
+      vmImage: 'vs2017-win2016'
+
+    steps:
+
+      - script: yarn install
+
+      - script: yarn build
+
+      - task: CopyFiles@2
+        inputs:
+            SourceFolder: '$(System.DefaultWorkingDirectory)'
+            Contents: |
+              $(System.DefaultWorkingDirectory)/dist/**
+            TargetFolder: '$(Build.ArtifactStagingDirectory)/output'
+        displayName: 'Copy source files to artifact directory'
+
+      - task: ArchiveFiles@2
+        displayName: 'Archive files'
+        inputs:
+          rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/output'
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+          replaceExistingArchive: true
+        displayName: 'Compress distrbutive'
+
+      - task: PublishPipelineArtifact@0
+        displayName: 'Publish server pipeline artifacts'
+        inputs:
+            targetPath: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+
+- stage: dev1
+  dependsOn:
+  - build  
+  condition: succeeded('build')
+
+  jobs:
+  - deployment: deploy
+    displayName: Deploy HB web site
+    environment: 'website'
+    pool:
+      vmImage: 'vs2017-win2016'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: DownloadPipelineArtifact@1
+              displayName: 'Download Pipeline Artifacts'
+              inputs:
+                buildType: 'current'
+            - task: ExtractFiles@1
+              displayName: Extract Files
+              inputs:
+                archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/$(Build.BuildId).zip'
+                destinationFolder: '$(System.DefaultWorkingDirectory)/unzip/$(Build.BuildId)'
+                cleanDestinationFolder: true
+
+            - task: AzureCLI@2
+              displayName: Delete old content from BLOB $web
+              inputs:
+                azureSubscription: $(azSubscription)
+                scriptType: ps
+                scriptLocation: inlineScript
+                inlineScript: |
+                  az storage blob delete-batch --account-name $(storageAccount) --source `$web 
+
+            - task: AzureFileCopy@3
+              displayName: Deploy to BLOB $web
+              inputs:
+                SourcePath: '$(System.DefaultWorkingDirectory)/unzip/$(Build.BuildId)/dist'
+                azureSubscription: $(azSubscription)
+                Destination: 'AzureBlob'
+                storage: $(storageAccount)
+                ContainerName: '$web'
+
