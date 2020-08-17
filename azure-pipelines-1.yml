@@ -7,10 +7,10 @@ variables:
 
 stages:
 
-- stage: build-web-site
+- stage: build_web_site
 
   jobs:
-  - job: build
+  - job: build_web_site
     pool:
       vmImage: 'vs2017-win2016'
 
@@ -42,10 +42,10 @@ stages:
         inputs:
             targetPath: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
 
-- stage: deploy-web-site
+- stage: deploy_web_site
   dependsOn:
-  - build-web-site  
-  condition: succeeded('build-web-site')
+  - build_web_site  
+  condition: succeeded('build_web_site')
 
   jobs:
   - deployment: deploy
