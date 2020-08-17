@@ -4,6 +4,8 @@ variables:
   azSubscription: 'UNI_WEBS - RS-UNI-CHE-HEALTH-BUDDY'
   resourceGroup: 'RS-UNI-CHE-HEALTH-BUDDY'
   storageAccount: saeuwprd1hbcovid01web
+  website_source_cfg: 'website.cfg'
+  website_dest_cfg: '.env.local'
 
 stages:
 
@@ -15,6 +17,22 @@ stages:
       vmImage: 'vs2017-win2016'
 
     steps:
+      - task: DownloadSecureFile@1
+        name: SecuredConfig
+        displayName: 'Download Secured Config'
+        inputs:
+          secureFile: $(website_source_cfg)
+
+      - script: |
+          echo Deleting "$(website_dest_cfg)" file
+          del $(website_dest_cfg)
+          dir
+          echo Copying new "$(website_dest_cfg)" file
+          echo Source: $(SecuredConfig.secureFilePath)
+          echo Destination: $(website_dest_cfg)
+          copy $(SecuredConfig.secureFilePath) $(website_dest_cfg)
+          dir
+        displayName: Updating website config
 
       - script: yarn install
 
