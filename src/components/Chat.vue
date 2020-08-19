@@ -170,9 +170,32 @@
         right: 8px;
         top: 8px;
       }
+
+      &:before {
+        content: '';
+        width: 94%;
+        height: 110%;
+        border: 3px solid #1CABE2;;
+        border-radius: 66px;
+        position: absolute;
+        animation: pulsate infinite 1.4s;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+    }
+    @-webkit-keyframes pulsate {
+      0% {
+        -webkit-transform: scale(1.1, 1.1);
+        opacity: 1;
+      }
+      100% {
+        -webkit-transform: scale(1.2, 1.2);
+        opacity: 0;
+      }
     }
     .push-widget-container {
-      bottom: 110px;
+      bottom: 50px;
       right: 20px;
       &.push-chat-open {
         height: 98vh;
@@ -328,7 +351,7 @@
         font-family: "Open Sans", sans-serif;
         font-size: $fontSize;
         color: $theme-color2;
-        padding: 15px;
+        padding: 9px 15px;
         justify-content: center;
       }
 

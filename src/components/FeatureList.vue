@@ -71,6 +71,9 @@
       /deep/ .owl-carousel .owl-stage-outer {
         overflow: visible;
       }
+      /deep/ .owl-theme .owl-nav {
+        display: none;
+      }
     }
   }
 </style>

@@ -127,6 +127,10 @@ $img-height: 9vh;
 
     a {
       color: $blackTextColor;
+      text-decoration: underline;
+      &:hover {
+        text-decoration: none;
+      }
     }
 
     img {

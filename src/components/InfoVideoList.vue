@@ -48,16 +48,6 @@ $dotColor: #89C5CC;
   margin: 0 auto;
   z-index: $baseZIndex - 1;
 
-  &:before {
-    content: "";
-    position: absolute;
-    background: url("../assets/img/svg/plant_white.svg") no-repeat center center;
-    width: 93px;
-    height: 108px;
-    bottom: -28px;
-    left: -35px;
-  }
-
   &:after {
     content: "";
     position: absolute;
@@ -65,7 +55,7 @@ $dotColor: #89C5CC;
     width: 115px;
     height: 234px;
     bottom: -43px;
-    left: 0;
+    right: -230px;
   }
 
   .info-video-image_left {

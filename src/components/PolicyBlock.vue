@@ -57,12 +57,12 @@ $blockBackgroundColor: $whiteColor;
     position: relative;
     color: $textColor;
     @include font(18px, normal, 160%);
-    padding: 40px 30px 40px 88px;
+    padding: 15px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     background: none;
-    @include wrapper();
+    margin: 0 auto;
   }
 
   .Cookie--base .Cookie__button {
@@ -84,8 +84,18 @@ $blockBackgroundColor: $whiteColor;
   }
   @media (max-width: $mobileResolution) {
     .Cookie {
-      padding: 25px;
+      padding: 16px;
       flex-direction: row;
+    }
+    .Cookie__wrapper {
+
+      p {
+        @include font(13px, normal, 160%);
+      }
+    }
+    .Cookie--base .Cookie__button {
+      width: 36px;
+      height: 36px;
     }
   }
 }

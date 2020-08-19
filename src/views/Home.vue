@@ -171,6 +171,8 @@
     },
     mounted() {
       this.fetchData();
+      this.resetCarousel();
+      this.initVideos();
     },
     watch: {
       getLanguage() {

@@ -54,9 +54,9 @@ $squareColor: $whiteColor;
   display: flex;
 
   &::before {
-    @include square(800px, $squareColor, -1);
-    right: 45px;
-    bottom: -53%;
+    @include square(850px, $squareColor, -1);
+    right: 5%;
+    bottom: -61%;
   }
 
   &__wrapper {
@@ -69,7 +69,7 @@ $squareColor: $whiteColor;
 
   &__content {
     width: 40%;
-    padding-top: 70px;
+    padding-top: 40px;
     z-index: $baseZIndex + 3;
   }
 
@@ -87,7 +87,7 @@ $squareColor: $whiteColor;
   &__image {
     position: absolute;
     bottom: 0;
-    right: 0;
+    right: 5%;
 
     &-bubble {
       @include font(18px, bold, 160%);
@@ -108,7 +108,7 @@ $squareColor: $whiteColor;
         display: block;
         position: absolute;
         bottom: -22px;
-        left: 35%;
+        right: 29%;
       }
     }
 
@@ -131,8 +131,7 @@ $squareColor: $whiteColor;
 @media (max-width: $mobileResolution) {
   .banner {
     margin-top: 120px;
-    height: calc(100vh - 120px);
-    min-height: initial;
+    min-height: 600px;
 
     &::before {
       width: 524px;
@@ -167,7 +166,7 @@ $squareColor: $whiteColor;
 
       &-bubble {
         font-size: 12px;
-        padding: 27px;
+        padding: 20px;
         border-radius: 44px;
         top: -66px;
       }

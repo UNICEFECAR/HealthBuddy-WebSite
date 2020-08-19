@@ -29,7 +29,9 @@
         </div>
 
         <div class="navbar__nav navbar__nav_mobile">
-          <LanguageDropdown/>
+          <LanguageDropdown
+            :title="attrs.field_dropdown_title"
+            :searchPlaceholder="attrs.field_dropdown_search"/>
           <a :class="{ 'is-active': menuActive }"
              class="navbar-menu__opener"
              @click="menuActive = !menuActive">

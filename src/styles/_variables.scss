@@ -30,6 +30,9 @@ $baseZIndex: 0;
 @mixin wrapper {
   max-width: 1300px;
   margin: 0 auto;
+  @media (min-width: 1200px) {
+    max-width: 80vw;
+  }
 }
 
 @mixin font($fontSize, $fontWeight: normal, $lineHeight: 20px) {

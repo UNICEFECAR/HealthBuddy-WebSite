@@ -77,6 +77,9 @@ export default {
   }
   &__button {
     margin-right: 24px;
+    img {
+      width: 100%;
+    }
   }
 }
 
