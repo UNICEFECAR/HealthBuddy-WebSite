@@ -53,41 +53,42 @@ $squareColor: $whiteColor;
   margin-top: 120px;
   display: flex;
 
-  &::before {
-    @include square(850px, $squareColor, -1);
-    right: 5%;
-    bottom: -61%;
-  }
-
   &__wrapper {
     height: inherit;
     display: flex;
+    justify-content: center;
+    flex-direction: column;
     padding: 0 30px 0 88px;
     width: 100%;
     @include wrapper();
   }
 
   &__content {
-    width: 40%;
-    padding-top: 40px;
+    width: 42%;
     z-index: $baseZIndex + 3;
   }
 
   &__title {
     margin-bottom: 25px;
     margin-top: 0;
-    @include font(51px, 300, 130%);
+    @include font(48px, 300, 130%);
   }
 
   &__subtitle {
-    @include font(18px, 300, 160%);
+    @include font(18px, 300, 180%);
     width: 89%;
+    margin-bottom: 150px;
   }
 
   &__image {
     position: absolute;
     bottom: 0;
     right: 5%;
+    &::before {
+      @include square(850px, $squareColor, -1);
+      right: -27%;
+      bottom: -108%;
+    }
 
     &-bubble {
       @include font(18px, bold, 160%);
@@ -124,7 +125,7 @@ $squareColor: $whiteColor;
 
 .navbar__wrapper_full + .home {
   .banner {
-    margin-top: 280px;
+    margin-top: 240px;
   }
 }
 
@@ -133,22 +134,16 @@ $squareColor: $whiteColor;
     margin-top: 120px;
     min-height: 600px;
 
-    &::before {
-      width: 524px;
-      height: 524px;
-      right: -65%;
-      bottom: -17%;
-    }
-
     &__wrapper {
       padding: 0;
+      justify-content: flex-start;
     }
 
     &__content {
       width: 100%;
       text-align: left;
-      margin: 0 25px;
-      padding-top: 0;
+      margin: 0;
+      padding: 25px;
     }
 
     &__title {
@@ -157,12 +152,19 @@ $squareColor: $whiteColor;
 
     &__subtitle {
       font-size: 16px;
+      margin-bottom: 70px;
     }
 
     &__image {
+      position: relative;
       width: 100%;
       display: flex;
       justify-content: center;
+      &::before {
+        @include square(635px, $squareColor, -1);
+        right: -38%;
+        bottom: -81%;
+      }
 
       &-bubble {
         font-size: 12px;

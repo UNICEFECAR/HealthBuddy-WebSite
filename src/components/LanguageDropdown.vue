@@ -106,7 +106,6 @@
   .dropdown {
     display: flex;
     align-items: center;
-    position: relative;
     background-color: $dropdownBackgroundColor;
     border-radius: 26px;
 
@@ -215,24 +214,13 @@
       background-color: $dropdownBackgroundColor;
       border-radius: 20px;
       position: absolute;
-      right: 0;
+      right: 1%;
       left: inherit;
-      top: 175%;
+      top: 102%;
       width: 375px;
       padding: 20px;
       flex-direction: column;
       box-sizing: border-box;
-
-      &:before {
-        content: "";
-        background: url("../assets/img/corner.png") no-repeat;
-        width: 36px;
-        height: 18px;
-        display: block;
-        position: absolute;
-        top: -18px;
-        right: 72px;
-      }
     }
 
     &__item {

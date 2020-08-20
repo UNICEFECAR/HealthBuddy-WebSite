@@ -211,6 +211,22 @@ export default {
       padding: 6px;
       align-self: center;
       margin-right: 0;
+
+      &.is-active {
+        /deep/ .dropdown-navbar-item__opener {
+          &:before {
+            content: "";
+            background: url("../assets/img/corner.png") no-repeat;
+            width: 36px;
+            height: 18px;
+            display: block;
+            position: absolute;
+            bottom: -31px;
+            right: 50%;
+            margin-right: -10px;
+          }
+        }
+      }
     }
   }
 
