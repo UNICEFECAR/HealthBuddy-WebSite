@@ -1,0 +1,131 @@
+
+trigger: none
+
+
+parameters:
+  - name: build_environment
+    type: boolean
+    default: false
+
+
+variables:
+  - group: HealthBuddy-website
+
+
+stages:
+
+- stage: build_infra
+  condition: and(succeeded(), ${{ parameters.build_environment }}, true)
+
+  jobs:
+  - job: build_infra
+    pool:
+      vmImage: 'vs2017-win2016'
+
+    steps:
+    - task: AzureCLI@1
+      displayName: 'Azure CLI: Create Azure Container registry'
+      inputs:
+        azureSubscription: $(azSubscription)
+        scriptLocation: inlineScript
+        inlineScript: |
+          az acr create -n $(azureContainerRegistryShort) -g $(resourceGroupName) --sku Basic
+
+    - task: AzureCLI@1
+      displayName: 'Azure CLI: Create Azure App Service Plan'
+      inputs:
+        azureSubscription: $(azSubscription)
+        scriptLocation: inlineScript
+        inlineScript: |
+          az appservice plan create -n $(appServicePlanName) -g $(resourceGroupName) --is-linux --sku B1
+
+    - task: AzureCLI@1
+      displayName: 'Azure CLI: Create Azure web App'
+      inputs:
+        azureSubscription: $(azSubscription)
+        scriptLocation: inlineScript
+        inlineScript: |
+          az webapp create -n $(appName) -g $(resourceGroupName) -p $(appServicePlanName)  --deployment-container-image-name $(azureContainerRegistry)/$(appName)
+
+
+- stage: build_code
+  displayName: build_code
+  condition: always()
+
+  jobs:
+  - job: build_code
+    pool:
+      vmImage: 'ubuntu-16.04'
+
+    steps:
+
+    - task: DownloadSecureFile@1
+      name: SecuredConfig
+      displayName: 'Download Secured Config'
+      inputs:
+        secureFile: $(website_source_cfg)
+
+    - script: |
+        echo "Current dir:"
+        ls -a
+        echo Deleting "$(website_dest_cfg)" file
+        rm $(website_dest_cfg)
+        echo "Current dir:"
+        ls -a
+        echo Copying new "$(website_dest_cfg)" file
+        echo Source: $(SecuredConfig.secureFilePath)
+        echo Destination: $(website_dest_cfg)
+        cp $(SecuredConfig.secureFilePath) $(website_dest_cfg)
+        echo "Current dir:"
+        ls -a
+      displayName: Updating website config
+
+    - task: Docker@1
+      displayName: 'Build an image'
+      inputs:
+        azureSubscriptionEndpoint: $(azSubscription)
+        azureContainerRegistry: $(azureContainerRegistry)
+        dockerFile: dockerfile
+        imageName: $(imageName)
+        useDefaultContext: false
+
+    - task: Docker@1
+      displayName: 'Push an image'
+      inputs:
+        azureSubscriptionEndpoint: $(azSubscription)
+        azureContainerRegistry: $(azureContainerRegistry)
+        command: 'Push an image'
+        imageName: $(imageName)
+
+- stage: deploy
+  dependsOn:
+  - build_code
+  condition: succeeded('build_code')
+
+  jobs:
+  - job: deploy
+    pool:
+      vmImage: 'ubuntu-16.04'
+
+    steps:
+    - task: AzureCLI@1
+      displayName: 'Azure CLI: Save container registry secrets'
+      inputs:
+        azureSubscription: $(azSubscription)
+        scriptLocation: inlineScript
+        inlineScript: |
+          az acr update -n $(azureContainerRegistryShort) --admin-enabled true
+          registryUserName=$(az acr credential show -n $(azureContainerRegistryShort) --query username)
+          registryPassword=$(az acr credential show -n $(azureContainerRegistryShort) --query passwords[0].value)
+          registryServerUrl=$(az acr show -n $(azureContainerRegistryShort) --query loginServer)
+          echo "##vso[task.setvariable variable=registryUserName]$registryUserName"
+          echo "##vso[task.setvariable variable=registryPassword;issecret=true]$registryPassword"
+          echo "##vso[task.setvariable variable=registryServerUrl]$registryServerUrl"
+
+    - task: AzureWebAppContainer@1
+      displayName: 'Azure Web App on Container Deploy'
+      inputs:
+        azureSubscription: $(azSubscription)
+        appName: $(appName)
+        containers: $(imageName)
+        appSettings: '-DOCKER_REGISTRY_SERVER_URL $(registryServerUrl) -DOCKER_REGISTRY_SERVER_USERNAME $(registryUserName) -DOCKER_REGISTRY_SERVER_PASSWORD $(registryPassword) -WEBSITES_PORT 80'
