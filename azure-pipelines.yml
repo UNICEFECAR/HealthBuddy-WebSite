@@ -20,7 +20,7 @@ stages:
   jobs:
   - job: build_infra
     pool:
-      vmImage: 'vs2017-win2016'
+      vmImage: 'ubuntu-16.04'
 
     steps:
     - task: AzureCLI@1
