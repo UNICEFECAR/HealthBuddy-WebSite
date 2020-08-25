@@ -1,0 +1,139 @@
+trigger: none
+
+
+parameters:
+  - name: build_environment
+    type: boolean
+    default: false
+
+
+variables:
+  - group: HealthBuddy-website
+
+
+
+stages:
+
+- stage: build_infra
+  condition: and(succeeded(), ${{ parameters.build_environment }}, true)
+
+  jobs:
+  - job: build_infra
+    pool:
+      vmImage: 'windows-latest'
+
+    steps:
+
+    - task: AzureCLI@1
+      displayName: 'Azure CLI: Create Azure App Service Plan'
+      inputs:
+        azureSubscription: $(azSubscription)
+        scriptLocation: inlineScript
+        inlineScript: |
+          az appservice plan create -n $(appServicePlanName) -g $(resourceGroupName) --sku $(appServicePlanSKU) --location $(location)
+
+    - task: AzureCLI@1
+      displayName: 'Azure CLI: Create Azure web App'
+      inputs:
+        azureSubscription: $(azSubscription)
+        scriptLocation: inlineScript
+        inlineScript: |
+          az webapp create -n $(appName) -g $(resourceGroupName) -p $(appServicePlanName)
+          
+
+- stage: build_web_site
+  condition: always()
+
+  jobs:
+  - job: build_web_site
+    pool:
+      vmImage: 'windows-latest'
+
+    steps:
+      - task: DownloadSecureFile@1
+        name: SecuredConfig
+        displayName: 'Download Secured Config'
+        inputs:
+          secureFile: $(website_source_cfg)
+
+      - script: |
+          echo Deleting "$(website_dest_cfg)" file
+          del $(website_dest_cfg)
+          dir
+          echo Copying new "$(website_dest_cfg)" file
+          echo Source: $(SecuredConfig.secureFilePath)
+          echo Destination: $(website_dest_cfg)
+          copy $(SecuredConfig.secureFilePath) $(website_dest_cfg)
+          dir
+        displayName: Updating website config
+
+      - script: yarn install
+        displayName: yarn install
+
+      - script: yarn build
+        displayName: yarn build
+
+      - script: |
+          dir    
+          echo Copying "web.config" file
+          copy web.config dist\web.config
+          dir dist
+        displayName: Updating IIS web.config
+
+      - task: CopyFiles@2
+        inputs:
+            SourceFolder: '$(System.DefaultWorkingDirectory)'
+            Contents: |
+              $(System.DefaultWorkingDirectory)/dist/**
+            TargetFolder: '$(Build.ArtifactStagingDirectory)/output'
+        displayName: 'Copy source files to artifact directory'
+      - task: ArchiveFiles@2
+        displayName: 'Archive files'
+        inputs:
+          rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/output'
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+          replaceExistingArchive: true
+
+      - task: PublishPipelineArtifact@0
+        displayName: 'Publish server pipeline artifacts'
+        inputs:
+            targetPath: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+
+- stage: deploy_web_site
+  dependsOn:
+  - build_web_site  
+  condition: succeeded('build_web_site')
+
+  jobs:
+  - deployment: deploy
+    displayName: Deploy HB web site
+    environment: 'website'
+    pool:
+      vmImage: 'windows-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: DownloadPipelineArtifact@1
+              displayName: 'Download Pipeline Artifacts'
+              inputs:
+                buildType: 'current'
+            - task: ExtractFiles@1
+              displayName: Extract Files
+              inputs:
+                archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/$(Build.BuildId).zip'
+                destinationFolder: '$(System.DefaultWorkingDirectory)/unzip/$(Build.BuildId)'
+                cleanDestinationFolder: true
+
+            - task: AzureCLI@1
+              displayName: 'Azure CLI: Save container registry secrets'
+              inputs:
+                azureSubscription: $(azSubscription)
+                scriptLocation: inlineScript
+                inlineScript: |
+                  dir
+                  cd unzip/$(Build.BuildId)/dist
+                  dir
+                  az webapp up --resource-group $(resourceGroupName) --name $(appName) --html
