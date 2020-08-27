@@ -1,4 +1,4 @@
-v1.0.44
+v1.1
 
 Added:
 - new design

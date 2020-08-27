@@ -99,63 +99,77 @@
     methods: {
       fetchData() {
         const lang = this.currentLanguage === 'en' ? '' : '/' + this.currentLanguage;
+        const fetchedData = (response) => {
+          this.videosAttrs = response.data.data[0].attributes;
+          this.videos = [
+            {
+              url: this.videosAttrs.field_videos_video[0].uri,
+              title: this.videosAttrs.field_videos_video[0].title,
+            },
+            {
+              url: this.videosAttrs.field_videos_video[1].uri,
+              title: this.videosAttrs.field_videos_video[1].title,
+            },
+            {
+              url: this.videosAttrs.field_videos_video[2].uri,
+              title: this.videosAttrs.field_videos_video[2].title,
+            },
+            {
+              url: this.videosAttrs.field_videos_video[3].uri,
+              title: this.videosAttrs.field_videos_video[3].title,
+            },
+          ];
+
+          const attrs = response.data.data[0].attributes;
+          this.heroAttrs = {
+            title: attrs.field_hero_title.value,
+            subtitle: attrs.field_hero_subtitle.value,
+            bubble: attrs.field_hero_bubble.value,
+          };
+          this.commonAttrs = {
+            aboutTitle: attrs.field_features_title,
+            aboutText: attrs.field_features_text.value,
+            aboutButton: attrs.field_features_button,
+            videosTitle: attrs.field_videos_title
+          }
+          this.featuresAttrs = [
+            {
+              iconName: this.multiplatformLogo,
+              title: attrs.field_features_feature_1_title,
+              text: attrs.field_features_feature_1_text.value,
+            },
+            {
+              iconName: this.multilanguageLogo,
+              title:attrs.field_features_feature_2_title,
+              text: attrs.field_features_feature_2_text.value,
+            },
+            {
+              iconName: this.covidInfoLogo,
+              title: attrs.field_features_feature_3_title,
+              text: attrs.field_features_feature_3_text.value,
+            },
+            {
+              iconName: this.newsLogo,
+              title: attrs.field_features_feature_4_title,
+              text: attrs.field_features_feature_4_text.value,
+            },
+          ];
+        }
         HTTP
           .get(lang + url + this.currentLanguage)
           .then(response => {
-            this.videosAttrs = response.data.data[0].attributes;
-            this.videos = [
-              {
-                url: this.videosAttrs.field_videos_video[0].uri,
-                title: this.videosAttrs.field_videos_video[0].title,
-              },
-              {
-                url: this.videosAttrs.field_videos_video[1].uri,
-                title: this.videosAttrs.field_videos_video[1].title,
-              },
-              {
-                url: this.videosAttrs.field_videos_video[2].uri,
-                title: this.videosAttrs.field_videos_video[2].title,
-              },
-              {
-                url: this.videosAttrs.field_videos_video[3].uri,
-                title: this.videosAttrs.field_videos_video[3].title,
-              },
-            ];
-
-            const attrs = response.data.data[0].attributes;
-            this.heroAttrs = {
-              title: attrs.field_hero_title.value,
-              subtitle: attrs.field_hero_subtitle.value,
-              bubble: attrs.field_hero_bubble.value,
-            };
-            this.commonAttrs = {
-              aboutTitle: attrs.field_features_title,
-              aboutText: attrs.field_features_text.value,
-              aboutButton: attrs.field_features_button,
-              videosTitle: attrs.field_videos_title
+            if (!response.data.data[0]) {
+              HTTP
+                .get(url + 'en')
+                .then(response => {
+                  fetchedData(response);
+                })
+                .catch(error => {
+                  console.log(error)
+                })
+            } else {
+              fetchedData(response);
             }
-            this.featuresAttrs = [
-              {
-                iconName: this.multiplatformLogo,
-                title: attrs.field_features_feature_1_title,
-                text: attrs.field_features_feature_1_text.value,
-              },
-              {
-                iconName: this.multilanguageLogo,
-                title:attrs.field_features_feature_2_title,
-                text: attrs.field_features_feature_2_text.value,
-              },
-              {
-                iconName: this.covidInfoLogo,
-                title: attrs.field_features_feature_3_title,
-                text: attrs.field_features_feature_3_text.value,
-              },
-              {
-                iconName: this.newsLogo,
-                title: attrs.field_features_feature_4_title,
-                text: attrs.field_features_feature_4_text.value,
-              },
-            ];
           })
           .catch(error => {
             console.log(error)

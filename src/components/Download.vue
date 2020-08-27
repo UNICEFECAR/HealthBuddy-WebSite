@@ -40,13 +40,27 @@ export default {
     fetchData() {
       const url = `/jsonapi/node/landing_page?filter[Langcode][condition][path]=langcode&filter[Langcode][condition][value]=`
       const lang = this.currentLanguage === 'en' ? '' : '/' + this.currentLanguage;
+      const fetchedData = (response) => {
+        this.attrs = response.data.data[0].attributes;
+        this.downloadTitle = this.attrs.field_download_app_text.value;
+        this.android = this.attrs.field_download_app_android;
+        this.ios = this.attrs.field_download_app_ios;
+      }
       HTTP
         .get(lang + url + this.currentLanguage)
         .then(response => {
-          this.attrs = response.data.data[0].attributes;
-          this.downloadTitle = this.attrs.field_download_app_text.value;
-          this.android = this.attrs.field_download_app_android;
-          this.ios = this.attrs.field_download_app_ios;
+          if (!response.data.data[0]) {
+            HTTP
+              .get(url + 'en')
+              .then(response => {
+                fetchedData(response);
+              })
+              .catch(error => {
+                console.log(error)
+              })
+          } else {
+            fetchedData(response);
+          }
         })
         .catch(error => {
           console.log(error)

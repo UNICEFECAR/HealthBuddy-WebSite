@@ -13,16 +13,18 @@
         <label class="dropdown__search">
           <input class="dropdown__search-input" type="text" v-model="search" :placeholder="searchPlaceholder"/>
         </label>
-        <a v-for="(language, index) in filteredList"
-           :key="index"
-           :class="{ selected: getLanguage === language.languageBrowserCode }"
-           :title="language.languageNameOriginal ? language.languageNameOriginal : language.languageNameLocalized"
-           @click="setLanguage(language.languageBrowserCode)"
-           class="dropdown__item">
-          <span class="dropdown__language">
-            {{ language.languageNameOriginal ? language.languageNameOriginal : language.languageNameLocalized }}
-          </span>
-        </a>
+        <div class="dropdown__list">
+          <a v-for="(language, index) in filteredList"
+             :key="index"
+             :class="{ selected: getLanguage === language.languageBrowserCode }"
+             :title="language.languageNameOriginal ? language.languageNameOriginal : language.languageNameLocalized"
+             @click="setLanguage(language.languageBrowserCode)"
+             class="dropdown__item">
+            <span class="dropdown__language">
+              {{ language.languageNameOriginal ? language.languageNameOriginal : language.languageNameLocalized }}
+            </span>
+          </a>
+        </div>
       </div>
     </div>
   </a>
@@ -223,6 +225,27 @@
       box-sizing: border-box;
     }
 
+    &__list {
+      max-height: 350px;
+      overflow: auto;
+      padding-right: 10px;
+      margin-top: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      border-radius: 10px;
+      background-color: #F5F5F5;
+    }
+
+    ::-webkit-scrollbar {
+      width: 7px;
+      background-color: #F5F5F5;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background-color: #ddd;
+    }
+
     &__item {
       font-size: 13px;
       padding: 20px 40px 20px 0;
@@ -300,6 +323,9 @@
           left: -17px;
         }
       }
+    }
+    &__list {
+      max-height: 300px;
     }
     .dropdown-navbar-item__country,
     .dropdown-navbar-item__opener {

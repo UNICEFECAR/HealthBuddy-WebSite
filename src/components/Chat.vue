@@ -102,12 +102,26 @@
       fetchData() {
         const url = `/jsonapi/node/landing_page?filter[Langcode][condition][path]=langcode&filter[Langcode][condition][value]=`
         const lang = this.currentLanguage === 'en' ? '' : '/' + this.currentLanguage;
+        const fetchedData = (response) => {
+          const attrs = response.data.data[0].attributes;
+          this.buttonText = attrs.field_chat_button_text;
+          this.inputPlaceholder = attrs.field_chat_input_placeholder;
+        }
         HTTP
           .get(lang + url + this.currentLanguage)
           .then(response => {
-            const attrs = response.data.data[0].attributes;
-            this.buttonText = attrs.field_chat_button_text;
-            this.inputPlaceholder = attrs.field_chat_input_placeholder;
+            if (!response.data.data[0]) {
+              HTTP
+                .get(url + 'en')
+                .then(response => {
+                  fetchedData(response);
+                })
+                .catch(error => {
+                  console.log(error)
+                })
+            } else {
+              fetchedData(response);
+            }
           })
           .then(() => {
             const paragraph = document.createElement("p");
@@ -175,10 +189,11 @@
         content: '';
         width: 94%;
         height: 110%;
-        border: 3px solid #1CABE2;;
+        border: 3px solid #1CABE2;
         border-radius: 66px;
         position: absolute;
         animation: pulsate infinite 1.4s;
+        top: -6px;
         left: 0;
         right: 0;
         margin: 0 auto;

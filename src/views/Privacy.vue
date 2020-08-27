@@ -42,13 +42,27 @@
       fetchData() {
         const url = `/jsonapi/node/privacy_policy_screen?fields[node--privacy_policy_screen]=langcode,title,body&filter[Langcode][condition][path]=langcode&filter[Langcode][condition][value]=`
         const lang = this.currentLanguage === 'en' ? '' : '/' + this.currentLanguage;
+        const fetchedData = (response) => {
+          const attrs = response.data.data[0].attributes;
+          this.pageAttrs = {
+            title: attrs.title,
+            content: attrs.body.value
+          }
+        }
         HTTP
           .get(lang + url + this.currentLanguage)
           .then(response => {
-            const attrs = response.data.data[0].attributes;
-            this.pageAttrs = {
-              title: attrs.title,
-              content: attrs.body.value
+            if (!response.data.data[0]) {
+              HTTP
+                .get(url + 'en')
+                .then(response => {
+                  fetchedData(response);
+                })
+                .catch(error => {
+                  console.log(error)
+                })
+            } else {
+              fetchedData(response);
             }
           })
           .catch(error => {

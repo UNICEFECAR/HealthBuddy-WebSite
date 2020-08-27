@@ -66,7 +66,8 @@ $blockBackgroundColor: $whiteColor;
   }
 
   .Cookie--base .Cookie__button {
-    background: url("../assets/img/svg/close.svg") no-repeat center center $backgroundColor;
+    background: url("../assets/img/svg/mark.svg") no-repeat center center $backgroundColor;
+    background-size: 15px;
     width: 60px;
     height: 60px;
     border: none;
@@ -75,7 +76,7 @@ $blockBackgroundColor: $whiteColor;
     padding: 0;
 
     &:hover {
-      background: url("../assets/img/svg/close.svg") no-repeat center center $backgroundColor;
+      background: url("../assets/img/svg/mark.svg") no-repeat center center $backgroundColor;
     }
 
     &:last-child {
