@@ -1,7 +1,5 @@
 # health-buddy-webapp
 
-Re-design of existing site "HealthBuddy"
-
 ## Project setup
 ```
 yarn install

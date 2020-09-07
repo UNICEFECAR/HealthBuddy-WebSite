@@ -5,9 +5,6 @@
         <Download />
       </div>
       <div class="footer__links">
-        <div class="footer__item footer__item_copyright">
-          <Copyright :copyright="copyright"/>
-        </div>
         <div class="footer__item footer__item_rights">
           {{ attrs.field_footer_copyright }}
         </div>
@@ -25,7 +22,6 @@
 </template>
 
 <script>
-import Copyright from "@/components/Copyright";
 import Download from "@/components/Download";
 import {HTTP} from "@/util/http";
 import {mapGetters} from "vuex";
@@ -33,7 +29,6 @@ import {mapGetters} from "vuex";
 export default {
   name: 'Footer',
   components: {
-    Copyright,
     Download
   },
   data() {
