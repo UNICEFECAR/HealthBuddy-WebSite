@@ -94,7 +94,7 @@
                 height: 844
               }
             },
-            storage: "session"
+            storage: "local"
           },
         });
         this.sendInitial();
