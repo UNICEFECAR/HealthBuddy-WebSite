@@ -52,6 +52,11 @@
       },
     },
     methods: {
+      calcDelay(message) {
+        let delay = message.length * 50;
+        if (delay < 400) delay = 1000;
+        return delay;
+      },
       sendInitial() {
         WebChat.send(this.initialPayload);
       },
@@ -87,6 +92,18 @@
           docViewer: true,
           showFullScreenButton: true,
           hideWhenNotConnected: false,
+          onWidgetEvent: {
+            onChatOpen: () => {
+              this.$router.push('index#webchat');
+            },
+            onChatClose: () => {
+              this.$router.push('index');
+            },
+          },
+          customMessageDelay: (message) => {
+            this.messages.push(message);
+            return this.calcDelay(this.messages[this.messages.length - 2] || message);
+          },
           params: {
             images: {
               dims: {
