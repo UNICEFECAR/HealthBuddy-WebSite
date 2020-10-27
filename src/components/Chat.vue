@@ -34,6 +34,7 @@
     },
     data() {
       return {
+        messages: [],
         initalized: false,
         buttonText: '',
         inputPlaceholder: ''
@@ -102,6 +103,9 @@
           },
           customMessageDelay: (message) => {
             this.messages.push(message);
+            if (this.messages.length == 1) {
+              return 0;
+            }
             return this.calcDelay(this.messages[this.messages.length - 2] || message);
           },
           params: {
