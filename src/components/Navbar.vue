@@ -8,7 +8,7 @@
         <div class="navbar__brand">
           <router-link :to="'/'" class="footer__menu-link">
             <img
-              src="@/assets/img/svg/logo.svg"
+              src="@/assets/img/logos/logo-big.png"
               alt="HealthBuddy logo">
           </router-link>
         </div>
@@ -171,6 +171,7 @@ export default {
   &__brand {
     display: flex;
     padding-bottom: 20px;
+    width: 19.438rem;
   }
 
   &__logo {
